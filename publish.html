@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publish Your Book - BookReader</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --primary-dark: #2c4b7a;
+            --secondary-color: #ff6b6b;
+            --text-color: #333;
+            --light-gray: #f8f9fa;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* Publish Section */
+        .publish-section {
+            padding: 6rem 0;
+            background: var(--light-gray);
+            min-height: 100vh;
+        }
+
+        .publish-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .publish-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .publish-header h1 {
+            font-size: 2.5rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        .publish-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Form Styles */
+        .publish-form {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+            outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed #ddd;
+            padding: 2rem;
+            text-align: center;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background: rgba(74, 111, 165, 0.05);
+        }
+
+        .file-upload i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .file-upload p {
+            margin: 0;
+            color: #666;
+        }
+
+        /* Checkbox Styles */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-color);
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(74, 111, 165, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 111, 165, 0.4);
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .publish-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .publish-form {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">BookReader</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="search.html">Search Books</a>
+                <a href="publish.html" class="active">Publish</a>
+                <a href="about.html">About</a>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Publish Section -->
+    <section class="publish-section">
+        <div class="publish-container">
+            <div class="publish-header">
+                <h1>Publish Your Book</h1>
+                <p>Share your story with the world through BookReader</p>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i> Your book has been submitted successfully!
+            </div>
+
+            <form class="publish-form" id="publishForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookTitle">Book Title</label>
+                        <input type="text" id="bookTitle" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="authorName">Author Name</label>
+                        <input type="text" id="authorName" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="genre">Genre</label>
+                        <select id="genre" class="form-control" required>
+                            <option value="">Select Genre</option>
+                            <option value="fiction">Fiction</option>
+                            <option value="non-fiction">Non-Fiction</option>
+                            <option value="science-fiction">Science Fiction</option>
+                            <option value="mystery">Mystery</option>
+                            <option value="romance">Romance</option>
+                            <option value="fantasy">Fantasy</option>
+                            <option value="biography">Biography</option>
+                            <option value="self-help">Self-Help</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="language">Language</label>
+                        <select id="language" class="form-control" required>
+                            <option value="">Select Language</option>
+                            <option value="english">English</option>
+                            <option value="spanish">Spanish</option>
+                            <option value="french">French</option>
+                            <option value="german">German</option>
+                            <option value="italian">Italian</option>
+                            <option value="portuguese">Portuguese</option>
+                            <option value="russian">Russian</option>
+                            <option value="chinese">Chinese</option>
+                            <option value="japanese">Japanese</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Book Description</label>
+                    <textarea id="description" class="form-control" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Book Cover</label>
+                    <div class="file-upload" id="coverUpload">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload book cover image</p>
+                        <input type="file" id="coverImage" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Book File</label>
+                    <div class="file-upload" id="bookUpload">
+                        <i class="fas fa-file-upload"></i>
+                        <p>Click to upload your book (PDF, EPUB)</p>
+                        <input type="file" id="bookFile" accept=".pdf,.epub" style="display: none;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">I agree to the terms and conditions and confirm that I own the rights to this book</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Publish Book</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BookReader</h3>
+                    <p>Your gateway to the world of books.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="index.html">Home</a>
+                    <a href="search.html">Search</a>
+                    <a href="publish.html">Publish</a>
+                    <a href="about.html">About</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BookReader. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation for mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        if (menuToggle && navLinks) {
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
+
+        // File upload handling
+        const coverUpload = document.getElementById('coverUpload');
+        const bookUpload = document.getElementById('bookUpload');
+        const coverImage = document.getElementById('coverImage');
+        const bookFile = document.getElementById('bookFile');
+
+        coverUpload.addEventListener('click', () => coverImage.click());
+        bookUpload.addEventListener('click', () => bookFile.click());
+
+        coverImage.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                coverUpload.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <p>${e.target.files[0].name}</p>
+                `;
+            }
+        });
+
+        bookFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                bookUpload.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <p>${e.target.files[0].name}</p>
+                `;
+            }
+        });
+
+        // Form submission
+        const form = document.getElementById('publishForm');
+        const successMessage = document.getElementById('successMessage');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Here you would typically send the form data to your server
+            // For now, we'll just show the success message
+            successMessage.style.display = 'block';
+            form.reset();
+            
+            // Reset file upload displays
+            coverUpload.innerHTML = `
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload book cover image</p>
+            `;
+            bookUpload.innerHTML = `
+                <i class="fas fa-file-upload"></i>
+                <p>Click to upload your book (PDF, EPUB)</p>
+            `;
+            
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
