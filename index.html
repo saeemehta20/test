@@ -11,22 +11,210 @@
             --primary-color: #4a6fa5;
             --primary-dark: #2c4b7a;
             --secondary-color: #ff6b6b;
-            --text-color: #333;
+            --accent-color: #6c5ce7;
+            --text-color: #2d3436;
             --light-gray: #f8f9fa;
             --border-radius: 12px;
             --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --text-secondary: #666;
+        }
+
+        /* Dark Mode Theme */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-secondary: #b3b3b3;
+            --light-gray: #2d2d2d;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --overlay-dark: rgba(0, 0, 0, 0.7);
+            --overlay-medium: rgba(0, 0, 0, 0.5);
+            --overlay-light: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Reading Mode Theme */
+        [data-theme="reading"] {
+            --bg-color: #f5f5dc;
+            --card-bg: #ffffff;
+            --text-color: #2d3436;
+            --text-secondary: #666;
+            --light-gray: #f0f0e0;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Theme Selector Styles */
+        .theme-selector {
+            position: relative;
+            margin-left: 1rem;
+        }
+
+        .theme-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .theme-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .theme-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 0.5rem;
+            display: none;
+            min-width: 150px;
+            z-index: 1000;
+        }
+
+        .theme-dropdown.active {
+            display: block;
+        }
+
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .theme-option:hover {
+            background: var(--light-gray);
+        }
+
+        .theme-option i {
+            font-size: 1rem;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 0.5rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .logo i {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-right: 0.3rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links .btn {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+
+        .nav-links .btn-outline {
+            border-width: 1.5px;
+        }
+
+        .nav-links .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(74, 111, 165, 0.2);
+        }
+
+        .nav-links .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 111, 165, 0.3);
         }
 
         /* Hero Section */
         .hero {
-            min-height: 80vh;
+            min-height: 100vh;
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
             display: flex;
             align-items: center;
             position: relative;
             overflow: hidden;
+            padding-top: 80px;
         }
 
         .hero::before {
@@ -38,6 +226,7 @@
             bottom: 0;
             background: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
             opacity: 0.1;
+            animation: zoomIn 20s infinite alternate;
         }
 
         .hero-content {
@@ -47,50 +236,68 @@
             padding: 2rem;
             position: relative;
             z-index: 1;
-            animation: fadeIn 1s ease-out;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            animation: slideUp 0.8s ease-out;
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInDown 1s ease-out;
+            line-height: 1.2;
         }
 
         .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            animation: slideUp 0.8s ease-out 0.2s;
+            font-size: 1.5rem;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 1s ease-out 0.3s;
             opacity: 0;
             animation-fill-mode: forwards;
+            line-height: 1.6;
         }
 
         /* Categories Section */
         .categories {
-            padding: 4rem 2rem;
+            padding: 6rem 2rem;
             background: var(--light-gray);
+            position: relative;
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
         }
 
         .section-header h2 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             color: var(--text-color);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
         }
 
         .section-header p {
             color: #666;
-            max-width: 600px;
-            margin: 0 auto;
+            max-width: 700px;
+            margin: 1.5rem auto 0;
+            font-size: 1.2rem;
+            line-height: 1.6;
         }
 
         .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -102,80 +309,190 @@
             box-shadow: var(--box-shadow);
             transition: var(--transition);
             animation: fadeIn 0.5s ease-out;
+            position: relative;
         }
 
         .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
 
         .category-image {
-            height: 200px;
+            position: relative;
+            height: 250px;
             background-size: cover;
             background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        .category-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .category-overlay h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            transform: translateY(20px);
+            transition: var(--transition);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .category-overlay p {
+            font-size: 1.2rem;
+            transform: translateY(20px);
+            transition: var(--transition);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .category-card:hover .category-overlay {
+            opacity: 1;
+        }
+
+        .category-card:hover .category-overlay h3,
+        .category-card:hover .category-overlay p {
+            transform: translateY(0);
         }
 
         .category-content {
-            padding: 1.5rem;
+            padding: 2.5rem;
+            position: relative;
         }
 
         .category-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            margin-bottom: 1rem;
             color: var(--text-color);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .category-content h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 2px;
         }
 
         .category-content p {
             color: #666;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
         }
 
-        /* Featured Books Section */
-        .featured-books {
-            padding: 4rem 2rem;
-        }
-
-        .book-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .book-card {
-            background: white;
+        .category-books {
+            margin: 2rem 0;
+            background: var(--light-gray);
             border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .book-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .book-cover {
-            height: 300px;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .book-info {
             padding: 1.5rem;
         }
 
-        .book-info h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-color);
+        .book-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.2rem;
+            border-radius: var(--border-radius);
+            background: white;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .book-info p {
+        .book-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .book-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .book-cover-small {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: var(--transition);
+        }
+
+        .book-item:hover .book-cover-small {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .book-info {
+            flex: 1;
+        }
+
+        .book-title {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.3rem;
+            font-size: 1.2rem;
+        }
+
+        .book-author {
+            font-size: 1rem;
             color: #666;
-            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(74, 111, 165, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 111, 165, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            width: 100%;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
         }
 
         /* Animations */
@@ -188,7 +505,18 @@
             }
         }
 
-        @keyframes slideUp {
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
@@ -199,20 +527,450 @@
             }
         }
 
+        @keyframes zoomIn {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.1);
+            }
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
+            .nav-container {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 2rem;
+                flex-direction: column;
+                gap: 1.5rem;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                transform: translateY(-100%);
+                transition: var(--transition);
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
+            .nav-links a {
+                width: 100%;
+                text-align: center;
+                padding: 0.5rem 0;
+            }
+
+            .nav-links .btn {
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
             .hero h1 {
                 font-size: 2.5rem;
             }
 
             .hero p {
-                font-size: 1rem;
+                font-size: 1.2rem;
             }
 
-            .category-grid,
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-content h3 {
+                font-size: 1.8rem;
+            }
+
+            .book-item {
+                padding: 1rem;
+            }
+
+            .book-cover-small {
+                width: 60px;
+                height: 90px;
+            }
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .menu-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .featured-books {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .book-cover {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .book-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .book-details {
+            color: white;
+            text-align: center;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+        .book-details h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .book-details p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .book-card:hover .book-overlay {
+            opacity: 1;
+        }
+
+        .book-card:hover .book-details {
+            transform: translateY(0);
+        }
+
+        .book-info {
+            padding: 1.5rem;
+            background: white;
+        }
+
+        .book-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .book-info p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .book-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .book-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .book-meta i {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
             .book-grid {
                 grid-template-columns: 1fr;
             }
+
+            .book-cover {
+                height: 300px;
+            }
+
+            .book-details p {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Add these new styles for book cards in dark mode */
+        [data-theme="dark"] .category-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] .category-image {
+            position: relative;
+        }
+
+        [data-theme="dark"] .category-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--overlay-dark);
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        [data-theme="dark"] .category-card:hover .category-image::after {
+            opacity: 0.5;
+        }
+
+        /* Different darkness levels for different categories */
+        [data-theme="dark"] .category-card:nth-child(1) .category-image::after {
+            background: var(--overlay-dark);
+        }
+
+        [data-theme="dark"] .category-card:nth-child(2) .category-image::after {
+            background: var(--overlay-medium);
+        }
+
+        [data-theme="dark"] .category-card:nth-child(3) .category-image::after {
+            background: var(--overlay-light);
+        }
+
+        [data-theme="dark"] .category-card:nth-child(4) .category-image::after {
+            background: var(--overlay-dark);
+        }
+
+        [data-theme="dark"] .category-card:nth-child(5) .category-image::after {
+            background: var(--overlay-medium);
+        }
+
+        [data-theme="dark"] .category-card:nth-child(6) .category-image::after {
+            background: var(--overlay-light);
+        }
+
+        /* Update book items in dark mode */
+        [data-theme="dark"] .book-item {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] .book-item:hover {
+            background: var(--light-gray);
+            transform: translateX(5px);
+        }
+
+        [data-theme="dark"] .book-cover-small {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        [data-theme="dark"] .book-item:hover .book-cover-small {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Update category content in dark mode */
+        [data-theme="dark"] .category-content {
+            background: var(--card-bg);
+        }
+
+        [data-theme="dark"] .category-content h3 {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .category-content p {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .category-books {
+            background: var(--bg-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Update buttons in dark mode */
+        [data-theme="dark"] .btn-outline {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .btn-outline:hover {
+            background: var(--primary-color);
+            color: var(--text-color);
+        }
+
+        /* Update featured books section in dark mode */
+        [data-theme="dark"] .featured-books {
+            background: var(--bg-color);
+        }
+
+        [data-theme="dark"] .book-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] .book-overlay {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.9));
+        }
+
+        [data-theme="dark"] .book-info {
+            background: var(--card-bg);
+        }
+
+        [data-theme="dark"] .book-meta {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .book-meta i {
+            color: var(--primary-color);
+        }
+
+        /* Update dark mode navbar styles */
+        [data-theme="dark"] .navbar {
+            background: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] .nav-links a {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .nav-links a::after {
+            background: var(--primary-color);
+        }
+
+        [data-theme="dark"] .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .logo {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .logo i {
+            color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .menu-toggle {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .menu-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .nav-links .btn-outline {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .nav-links .btn-outline:hover {
+            background: var(--primary-color);
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .nav-links .btn-primary {
+            background: var(--primary-color);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(74, 111, 165, 0.3);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        [data-theme="dark"] .nav-links .btn-primary:hover {
+            background: var(--primary-dark);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 111, 165, 0.4);
+        }
+
+        [data-theme="dark"] .nav-links .btn-outline {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        [data-theme="dark"] .nav-links .btn-outline:hover {
+            background: var(--primary-color);
+            color: #ffffff;
+        }
+
+        /* Update mobile menu styles for dark mode */
+        [data-theme="dark"] .nav-links {
+            background: var(--card-bg);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="dark"] .nav-links a {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .nav-links .btn {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        [data-theme="dark"] .nav-links .btn:hover {
+            background: var(--primary-color);
+            color: #ffffff;
         }
     </style>
 </head>
@@ -220,12 +978,34 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="logo">BookReader</a>
+            <a href="index.html" class="logo">
+                <i class="fas fa-book-reader"></i>
+                BookReader
+            </a>
             <div class="nav-links">
                 <a href="index.html" class="active">Home</a>
                 <a href="search.html">Search Books</a>
                 <a href="publish.html">Publish</a>
                 <a href="about.html">About</a>
+                <div class="theme-selector">
+                    <button class="theme-btn">
+                        <i class="fas fa-palette"></i>
+                    </button>
+                    <div class="theme-dropdown">
+                        <div class="theme-option" data-theme="light">
+                            <i class="fas fa-sun"></i>
+                            <span>Light Mode</span>
+                        </div>
+                        <div class="theme-option" data-theme="dark">
+                            <i class="fas fa-moon"></i>
+                            <span>Dark Mode</span>
+                        </div>
+                        <div class="theme-option" data-theme="reading">
+                            <i class="fas fa-book-reader"></i>
+                            <span>Reading Mode</span>
+                        </div>
+                    </div>
+                </div>
                 <a href="signin.html" class="btn btn-outline">Sign In</a>
                 <a href="signup.html" class="btn btn-primary">Sign Up</a>
             </div>
@@ -251,28 +1031,177 @@
             <p>Browse books by your favorite genres</p>
         </div>
         <div class="category-grid">
+            <!-- Fiction Category -->
             <div class="category-card">
-                <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')"></div>
+                <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')">
+                    <div class="category-overlay">
+                        <h3>Fiction</h3>
+                        <p>Explore captivating stories and imaginative worlds</p>
+                    </div>
+                </div>
                 <div class="category-content">
-                    <h3>Fiction</h3>
-                    <p>Explore captivating stories and imaginative worlds</p>
-                    <a href="search.html?genre=fiction" class="btn btn-outline">Browse Books</a>
+                    <div class="category-books">
+                        <div class="book-item" onclick="navigateToPreview('9780061120084')">
+                            <img src="https://images-na.ssl-images-amazon.com/images/I/51IXWZzlgSL._SX331_BO1,204,203,200_.jpg" alt="To Kill a Mockingbird" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">To Kill a Mockingbird</div>
+                                <div class="book-author">Harper Lee</div>
+                            </div>
+                        </div>
+                        <div class="book-item" onclick="navigateToPreview('9780743273565')">
+                            <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="The Great Gatsby" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">The Great Gatsby</div>
+                                <div class="book-author">F. Scott Fitzgerald</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="search.html?genre=fiction" class="btn btn-outline">Browse More</a>
                 </div>
             </div>
+
+            <!-- Science Fiction Category -->
             <div class="category-card">
-                <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')"></div>
+                <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')">
+                    <div class="category-overlay">
+                        <h3>Science Fiction</h3>
+                        <p>Journey through futuristic worlds and advanced technology</p>
+                    </div>
+                </div>
                 <div class="category-content">
-                    <h3>Science Fiction</h3>
-                    <p>Journey through futuristic worlds and advanced technology</p>
-                    <a href="search.html?genre=sci-fi" class="btn btn-outline">Browse Books</a>
+                    <div class="category-books">
+                        <div class="book-item" onclick="navigateToPreview('9780553418026')">
+                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="The Martian" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">The Martian</div>
+                                <div class="book-author">Andy Weir</div>
+                            </div>
+                        </div>
+                        <div class="book-item" onclick="navigateToPreview('9780553382563')">
+                            <img src="https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Dune" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">Dune</div>
+                                <div class="book-author">Frank Herbert</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="search.html?genre=sci-fi" class="btn btn-outline">Browse More</a>
                 </div>
             </div>
+
+            <!-- Mystery Category -->
             <div class="category-card">
-                <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')"></div>
+                <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')">
+                    <div class="category-overlay">
+                        <h3>Mystery</h3>
+                        <p>Unravel thrilling mysteries and solve intriguing puzzles</p>
+                    </div>
+                </div>
                 <div class="category-content">
-                    <h3>Mystery</h3>
-                    <p>Unravel thrilling mysteries and solve intriguing puzzles</p>
-                    <a href="search.html?genre=mystery" class="btn btn-outline">Browse Books</a>
+                    <div class="category-books">
+                        <div class="book-item" onclick="navigateToPreview('9780062073501')">
+                            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Gone Girl" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">Gone Girl</div>
+                                <div class="book-author">Gillian Flynn</div>
+                            </div>
+                        </div>
+                        <div class="book-item" onclick="navigateToPreview('9780307743657')">
+                            <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="The Girl with the Dragon Tattoo" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">The Girl with the Dragon Tattoo</div>
+                                <div class="book-author">Stieg Larsson</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="search.html?genre=mystery" class="btn btn-outline">Browse More</a>
+                </div>
+            </div>
+
+            <!-- Fantasy Category -->
+            <div class="category-card">
+                <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')">
+                    <div class="category-overlay">
+                        <h3>Fantasy</h3>
+                        <p>Enter magical realms and epic adventures</p>
+                    </div>
+                </div>
+                <div class="category-content">
+                    <div class="category-books">
+                        <div class="book-item" onclick="navigateToPreview('9780544003415')">
+                            <img src="https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="The Hobbit" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">The Hobbit</div>
+                                <div class="book-author">J.R.R. Tolkien</div>
+                            </div>
+                        </div>
+                        <div class="book-item" onclick="navigateToPreview('9780553103540')">
+                            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="A Game of Thrones" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">A Game of Thrones</div>
+                                <div class="book-author">George R.R. Martin</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="search.html?genre=fantasy" class="btn btn-outline">Browse More</a>
+                </div>
+            </div>
+
+            <!-- Romance Category -->
+            <div class="category-card">
+                <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')">
+                    <div class="category-overlay">
+                        <h3>Romance</h3>
+                        <p>Experience heartwarming love stories</p>
+                    </div>
+                </div>
+                <div class="category-content">
+                    <div class="category-books">
+                        <div class="book-item" onclick="navigateToPreview('9780385720048')">
+                            <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="The Notebook" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">The Notebook</div>
+                                <div class="book-author">Nicholas Sparks</div>
+                            </div>
+                        </div>
+                        <div class="book-item" onclick="navigateToPreview('9780385537851')">
+                            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="The Rosie Project" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">The Rosie Project</div>
+                                <div class="book-author">Graeme Simsion</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="search.html?genre=romance" class="btn btn-outline">Browse More</a>
+                </div>
+            </div>
+
+            <!-- Biography Category -->
+            <div class="category-card">
+                <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')">
+                    <div class="category-overlay">
+                        <h3>Biography</h3>
+                        <p>Discover inspiring life stories</p>
+                    </div>
+                </div>
+                <div class="category-content">
+                    <div class="category-books">
+                        <div class="book-item" onclick="navigateToPreview('9780743477109')">
+                            <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Steve Jobs" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">Steve Jobs</div>
+                                <div class="book-author">Walter Isaacson</div>
+                            </div>
+                        </div>
+                        <div class="book-item" onclick="navigateToPreview('9780062315007')">
+                            <img src="https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="The Alchemist" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">The Alchemist</div>
+                                <div class="book-author">Paulo Coelho</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="search.html?genre=biography" class="btn btn-outline">Browse More</a>
                 </div>
             </div>
         </div>
@@ -286,34 +1215,70 @@
         </div>
         <div class="book-grid">
             <div class="book-card">
-                <div class="book-cover" style="background-image: url('https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')"></div>
+                <div class="book-cover">
+                    <img src="https://images-na.ssl-images-amazon.com/images/I/41BCpVvWjFL._SX327_BO1,204,203,200_.jpg" alt="The Silent Patient">
+                    <div class="book-overlay">
+                        <div class="book-details">
+                            <h4>Psychological Thriller</h4>
+                            <p>A woman's act of violence against her husband—and of silence in its aftermath—upends the world of a psychotherapist obsessed with uncovering her motive.</p>
+                            <a href="preview.html" class="btn btn-primary">Read Preview</a>
+                        </div>
+                    </div>
+                </div>
                 <div class="book-info">
                     <h3>The Silent Patient</h3>
                     <p>Alex Michaelides</p>
-                    <a href="preview.html" class="btn btn-primary">Read Preview</a>
+                    <div class="book-meta">
+                        <span><i class="fas fa-star"></i> 4.5</span>
+                        <span><i class="fas fa-book-reader"></i> 2M+ reads</span>
+                    </div>
                 </div>
             </div>
             <div class="book-card">
-                <div class="book-cover" style="background-image: url('https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')"></div>
+                <div class="book-cover">
+                    <img src="https://images-na.ssl-images-amazon.com/images/I/51b5BJqT7PL._SX329_BO1,204,203,200_.jpg" alt="Project Hail Mary">
+                    <div class="book-overlay">
+                        <div class="book-details">
+                            <h4>Science Fiction</h4>
+                            <p>A lone astronaut must save humanity from a catastrophic extinction event by solving a scientific mystery billions of miles from Earth.</p>
+                            <a href="preview.html" class="btn btn-primary">Read Preview</a>
+                        </div>
+                    </div>
+                </div>
                 <div class="book-info">
                     <h3>Project Hail Mary</h3>
                     <p>Andy Weir</p>
-                    <a href="preview.html" class="btn btn-primary">Read Preview</a>
+                    <div class="book-meta">
+                        <span><i class="fas fa-star"></i> 4.8</span>
+                        <span><i class="fas fa-book-reader"></i> 1.5M+ reads</span>
+                    </div>
                 </div>
             </div>
             <div class="book-card">
-                <div class="book-cover" style="background-image: url('https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')"></div>
+                <div class="book-cover">
+                    <img src="https://images-na.ssl-images-amazon.com/images/I/51j5p18mJNL._SX330_BO1,204,203,200_.jpg" alt="Where the Crawdads Sing">
+                    <div class="book-overlay">
+                        <div class="book-details">
+                            <h4>Literary Fiction</h4>
+                            <p>A coming-of-age story about a young woman growing up alone in the marshes of North Carolina, intertwined with a mysterious death investigation.</p>
+                            <a href="preview.html" class="btn btn-primary">Read Preview</a>
+                        </div>
+                    </div>
+                </div>
                 <div class="book-info">
                     <h3>Where the Crawdads Sing</h3>
                     <p>Delia Owens</p>
-                    <a href="preview.html" class="btn btn-primary">Read Preview</a>
+                    <div class="book-meta">
+                        <span><i class="fas fa-star"></i> 4.7</span>
+                        <span><i class="fas fa-book-reader"></i> 3M+ reads</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <script>
-        // Navigation for mobile
+        // Mobile navigation
         const menuToggle = document.querySelector('.menu-toggle');
         const navLinks = document.querySelector('.nav-links');
 
@@ -343,6 +1308,63 @@
             card.style.transition = 'all 0.5s ease-out';
             observer.observe(card);
         });
+
+        // Navigate to preview page
+        function navigateToPreview(isbn) {
+            localStorage.setItem('previewISBN', isbn);
+            window.location.href = 'preview.html';
+        }
+
+        // Theme functionality
+        const themeSelector = document.querySelector('.theme-selector');
+        const themeBtn = document.querySelector('.theme-btn');
+        const themeDropdown = document.querySelector('.theme-dropdown');
+        const themeOptions = document.querySelectorAll('.theme-option');
+
+        // Toggle theme dropdown
+        themeBtn.addEventListener('click', () => {
+            themeDropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!themeSelector.contains(e.target)) {
+                themeDropdown.classList.remove('active');
+            }
+        });
+
+        // Set theme
+        themeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const theme = option.getAttribute('data-theme');
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                themeDropdown.classList.remove('active');
+            });
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Update existing styles to use CSS variables
+        const updateStyles = () => {
+            document.querySelectorAll('.category-card, .book-card, .book-item').forEach(card => {
+                card.style.backgroundColor = 'var(--card-bg)';
+            });
+            
+            document.querySelectorAll('.category-content p, .book-author, .book-meta').forEach(text => {
+                text.style.color = 'var(--text-secondary)';
+            });
+        };
+
+        // Call updateStyles when theme changes
+        themeOptions.forEach(option => {
+            option.addEventListener('click', updateStyles);
+        });
+
+        // Initial style update
+        updateStyles();
     </script>
 </body>
 </html> 
