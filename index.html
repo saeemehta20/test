@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookReader - Your Gateway to Books</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --primary-dark: #2c4b7a;
+            --secondary-color: #ff6b6b;
+            --text-color: #333;
+            --light-gray: #f8f9fa;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 6rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover;
+            opacity: 0.1;
+            animation: zoomIn 20s infinite alternate;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out 0.3s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 6rem 0;
+            background-color: var(--light-gray);
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--secondary-color);
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .category-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        }
+
+        .category-books {
+            padding: 1.5rem;
+        }
+
+        .book-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .book-item:last-child {
+            border-bottom: none;
+        }
+
+        .book-item:hover {
+            background-color: var(--light-gray);
+            transform: translateX(5px);
+        }
+
+        .book-cover-small {
+            width: 70px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .book-item:hover .book-cover-small {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .book-info {
+            flex: 1;
+        }
+
+        .book-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .book-author {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Featured Section */
+        .featured {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .featured-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .featured-cover {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .featured-card:hover .featured-cover {
+            transform: scale(1.05);
+        }
+
+        .featured-info {
+            padding: 1.5rem;
+            position: relative;
+            background: white;
+        }
+
+        .featured-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .featured-info p {
+            color: #666;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .category-grid, .featured-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-cover {
+                height: 300px;
+            }
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--secondary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">BookReader</a>
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="search.html">Search Books</a>
+                <a href="about.html">About</a>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Discover Your Next Adventure</h1>
+            <p>Explore thousands of books across various genres and find your next favorite read</p>
+            <a href="search.html" class="btn btn-primary">Start Reading</a>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories">
+        <div class="container">
+            <h2 class="section-title">Browse by Category</h2>
+            <div class="category-grid">
+                <!-- Fiction Category -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <h3>Fiction</h3>
+                    </div>
+                    <div class="category-books">
+                        <div class="book-item" onclick="navigateToPreview('9780061120084')">
+                            <img src="https://books.google.com/books/content?id=5oKOoAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="To Kill a Mockingbird" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">To Kill a Mockingbird</div>
+                                <div class="book-author">Harper Lee</div>
+                            </div>
+                        </div>
+                        <div class="book-item" onclick="navigateToPreview('9780743273565')">
+                            <img src="https://books.google.com/books/content?id=5oKOoAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="The Great Gatsby" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">The Great Gatsby</div>
+                                <div class="book-author">F. Scott Fitzgerald</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Science Fiction Category -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <h3>Science Fiction</h3>
+                    </div>
+                    <div class="category-books">
+                        <div class="book-item" onclick="navigateToPreview('9780553418026')">
+                            <img src="https://books.google.com/books/content?id=5oKOoAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="The Martian" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">The Martian</div>
+                                <div class="book-author">Andy Weir</div>
+                            </div>
+                        </div>
+                        <div class="book-item" onclick="navigateToPreview('9780553382563')">
+                            <img src="https://books.google.com/books/content?id=5oKOoAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="Dune" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">Dune</div>
+                                <div class="book-author">Frank Herbert</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mystery Category -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <h3>Mystery</h3>
+                    </div>
+                    <div class="category-books">
+                        <div class="book-item" onclick="navigateToPreview('9780062073501')">
+                            <img src="https://books.google.com/books/content?id=5oKOoAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="Gone Girl" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">Gone Girl</div>
+                                <div class="book-author">Gillian Flynn</div>
+                            </div>
+                        </div>
+                        <div class="book-item" onclick="navigateToPreview('9780307743657')">
+                            <img src="https://books.google.com/books/content?id=5oKOoAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="The Girl with the Dragon Tattoo" class="book-cover-small">
+                            <div class="book-info">
+                                <div class="book-title">The Girl with the Dragon Tattoo</div>
+                                <div class="book-author">Stieg Larsson</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Books Section -->
+    <section class="featured">
+        <div class="container">
+            <h2 class="section-title">Featured Books</h2>
+            <div class="featured-grid">
+                <div class="featured-card" onclick="navigateToPreview('9780062315007')">
+                    <img src="https://books.google.com/books/content?id=5oKOoAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="The Alchemist" class="featured-cover">
+                    <div class="featured-info">
+                        <h3>The Alchemist</h3>
+                        <p>Paulo Coelho</p>
+                    </div>
+                </div>
+                <div class="featured-card" onclick="navigateToPreview('9780143105428')">
+                    <img src="https://books.google.com/books/content?id=5oKOoAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="1984" class="featured-cover">
+                    <div class="featured-info">
+                        <h3>1984</h3>
+                        <p>George Orwell</p>
+                    </div>
+                </div>
+                <div class="featured-card" onclick="navigateToPreview('9780307474278')">
+                    <img src="https://books.google.com/books/content?id=5oKOoAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="The Da Vinci Code" class="featured-cover">
+                    <div class="featured-info">
+                        <h3>The Da Vinci Code</h3>
+                        <p>Dan Brown</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BookReader</h3>
+                    <p>Your gateway to the world of books.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="index.html">Home</a>
+                    <a href="search.html">Search</a>
+                    <a href="about.html">About</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BookReader. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation for mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        if (menuToggle && navLinks) {
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
+
+        // Navigate to preview page
+        function navigateToPreview(isbn) {
+            localStorage.setItem('previewISBN', isbn);
+            window.location.href = 'preview.html';
+        }
+
+        // Add scroll animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.category-card, .featured-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.5s ease-out';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html> 
