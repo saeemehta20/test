@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/bookreader', {
+mongoose.connect('mongodb+srv://sachinchaurasiya69:606280Sk@tesing.8vhz1.mongodb.net/bookreader', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
@@ -81,7 +81,7 @@ const User = mongoose.model('User', userSchema);
 const Book = mongoose.model('Book', bookSchema);
 
 // JWT Secret
-const JWT_SECRET = 'your-secret-key'; // In production, use environment variable
+const JWT_SECRET = '123456789'; // In production, use environment variable
 
 // Middleware to verify JWT token
 const auth = async (req, res, next) => {
