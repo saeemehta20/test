@@ -262,6 +262,117 @@
         opacity: 0.9;
         transform: translateY(-1px);
       }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 2% auto;
+        padding: 20px;
+        width: 90%;
+        height: 90%;
+        border-radius: 8px;
+        position: relative;
+      }
+
+      .close-modal {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #666;
+      }
+
+      .close-modal:hover {
+        color: #000;
+      }
+
+      .book-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .read-btn {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .read-btn:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .progress-bar-container {
+        width: 100%;
+        height: 10px;
+        background-color: #eee;
+        border-radius: 5px;
+        margin: 10px 0;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background-color: var(--primary-color);
+        transition: width 0.3s ease;
+      }
+
+      .progress-text {
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 5px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .page-controls {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .page-input {
+        width: 60px;
+        padding: 4px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        text-align: center;
+      }
+
+      .update-progress {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+
+      .last-read {
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 5px;
+        font-style: italic;
+      }
     </style>
   </head>
   <body>
@@ -319,30 +430,64 @@
             </div>
 
             <!-- Upload Book Form -->
-            <form id="uploadBookForm" class="upload-form" style="display: none;">
+            <form id="uploadBookForm" class="upload-form" style="display: none">
               <div class="form-group">
                 <label for="bookTitle">Book Title</label>
-                <input type="text" id="bookTitle" class="form-control" required>
+                <input
+                  type="text"
+                  id="bookTitle"
+                  class="form-control"
+                  required
+                />
               </div>
               <div class="form-group">
                 <label for="bookGenre">Genre</label>
-                <input type="text" id="bookGenre" class="form-control" required>
+                <input
+                  type="text"
+                  id="bookGenre"
+                  class="form-control"
+                  required
+                />
               </div>
               <div class="form-group">
                 <label for="bookDescription">Description</label>
-                <textarea id="bookDescription" class="form-control" required></textarea>
+                <textarea
+                  id="bookDescription"
+                  class="form-control"
+                  required
+                ></textarea>
               </div>
               <div class="form-group">
                 <label for="bookCover">Cover Image</label>
-                <input type="file" id="bookCover" class="form-control" accept="image/*" required>
+                <input
+                  type="file"
+                  id="bookCover"
+                  class="form-control"
+                  accept="image/*"
+                  required
+                />
               </div>
               <div class="form-group">
                 <label for="bookFile">Book File (PDF)</label>
-                <input type="file" id="bookFile" class="form-control" accept=".pdf" required>
+                <input
+                  type="file"
+                  id="bookFile"
+                  class="form-control"
+                  accept=".pdf"
+                  required
+                />
               </div>
               <div class="form-buttons">
-                <button type="submit" class="btn btn-primary">Upload Book</button>
-                <button type="button" class="btn btn-secondary" onclick="toggleUploadForm()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                  Upload Book
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  onclick="toggleUploadForm()"
+                >
+                  Cancel
+                </button>
               </div>
             </form>
 
@@ -353,6 +498,14 @@
                 <!-- Books will be loaded here -->
               </div>
             </section>
+          </div>
+        </div>
+
+        <!-- PDF Preview Modal -->
+        <div id="pdfPreviewModal" class="modal" style="display: none">
+          <div class="modal-content">
+            <span class="close-modal" onclick="closePdfPreview()">&times;</span>
+            <iframe id="pdfViewer" style="width: 100%; height: 90vh"></iframe>
           </div>
         </div>
       </main>
@@ -460,6 +613,55 @@
                 <p class="book-author">By: ${
                   book.author ? book.author.name : "Unknown Author"
                 }</p>
+                
+                <!-- Reading Progress Section -->
+                <div class="progress-bar-container">
+                  <div class="progress-bar" style="width: ${calculateProgress(
+                    book.readingProgress
+                  )}%"></div>
+                </div>
+                <div class="progress-text">
+                  <span>Progress: ${calculateProgress(
+                    book.readingProgress
+                  )}%</span>
+                  <span>${book.readingProgress?.currentPage || 0} / ${
+                book.readingProgress?.totalPages || 0
+              } pages</span>
+                </div>
+                ${
+                  book.readingProgress?.lastReadAt
+                    ? `<div class="last-read">Last read: ${new Date(
+                        book.readingProgress.lastReadAt
+                      ).toLocaleDateString()}</div>`
+                    : ""
+                }
+                
+                <div class="page-controls">
+                  <input type="number" class="page-input" placeholder="Current page" 
+                         value="${book.readingProgress?.currentPage || 0}"
+                         min="0" max="${
+                           book.readingProgress?.totalPages || 100
+                         }"
+                         id="currentPage-${book._id}">
+                  <input type="number" class="page-input" placeholder="Total pages" 
+                         value="${book.readingProgress?.totalPages || 100}"
+                         min="1" id="totalPages-${book._id}">
+                  <button class="update-progress" onclick="updateProgress('${
+                    book._id
+                  }')">
+                    Update Progress
+                  </button>
+                </div>
+
+                <div class="book-actions">
+                  ${
+                    book.bookFile
+                      ? `<button class="read-btn" onclick="openPdfPreview('${book.bookFile}')">
+                        <i class="fas fa-book-reader"></i> Read Book
+                      </button>`
+                      : ""
+                  }
+                </div>
               </div>
             </div>
           `
@@ -476,46 +678,135 @@
         }
       }
 
+      // Calculate progress percentage
+      function calculateProgress(progress) {
+        if (!progress || !progress.totalPages) return 0;
+        const percentage = (progress.currentPage / progress.totalPages) * 100;
+        return Math.min(Math.round(percentage), 100);
+      }
+
+      // Update reading progress
+      async function updateProgress(bookId) {
+        const currentPage = parseInt(
+          document.getElementById(`currentPage-${bookId}`).value
+        );
+        const totalPages = parseInt(
+          document.getElementById(`totalPages-${bookId}`).value
+        );
+
+        if (
+          isNaN(currentPage) ||
+          isNaN(totalPages) ||
+          currentPage < 0 ||
+          totalPages < 1
+        ) {
+          alert("Please enter valid page numbers");
+          return;
+        }
+
+        if (currentPage > totalPages) {
+          alert("Current page cannot be greater than total pages");
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/books/${bookId}/progress`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ currentPage, totalPages }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to update progress");
+          }
+
+          // Refresh the books display
+          loadBooks();
+        } catch (error) {
+          console.error("Error updating progress:", error);
+          alert("Failed to update reading progress");
+        }
+      }
+
       // Toggle upload form visibility
       function toggleUploadForm() {
-        const form = document.getElementById('uploadBookForm');
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        const form = document.getElementById("uploadBookForm");
+        form.style.display = form.style.display === "none" ? "block" : "none";
       }
 
       // Handle book upload
-      document.getElementById('uploadBookForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const formData = new FormData();
-        formData.append('title', document.getElementById('bookTitle').value);
-        formData.append('genre', document.getElementById('bookGenre').value);
-        formData.append('description', document.getElementById('bookDescription').value);
-        formData.append('coverImage', document.getElementById('bookCover').files[0]);
-        formData.append('bookFile', document.getElementById('bookFile').files[0]);
+      document
+        .getElementById("uploadBookForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-        try {
-          const response = await fetch('/api/books', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            },
-            body: formData
-          });
+          const formData = new FormData();
+          formData.append("title", document.getElementById("bookTitle").value);
+          formData.append("genre", document.getElementById("bookGenre").value);
+          formData.append(
+            "description",
+            document.getElementById("bookDescription").value
+          );
+          formData.append(
+            "coverImage",
+            document.getElementById("bookCover").files[0]
+          );
+          formData.append(
+            "bookFile",
+            document.getElementById("bookFile").files[0]
+          );
 
-          if (response.ok) {
-            alert('Book uploaded successfully!');
-            document.getElementById('uploadBookForm').reset();
-            toggleUploadForm();
-            loadBooks(); // Refresh the books display
-          } else {
-            const error = await response.json();
-            throw new Error(error.message || 'Failed to upload book');
+          try {
+            const response = await fetch("/api/books", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              body: formData,
+            });
+
+            if (response.ok) {
+              alert("Book uploaded successfully!");
+              document.getElementById("uploadBookForm").reset();
+              toggleUploadForm();
+              loadBooks(); // Refresh the books display
+            } else {
+              const error = await response.json();
+              throw new Error(error.message || "Failed to upload book");
+            }
+          } catch (error) {
+            console.error("Error uploading book:", error);
+            alert(
+              error.message || "An error occurred while uploading the book"
+            );
           }
-        } catch (error) {
-          console.error('Error uploading book:', error);
-          alert(error.message || 'An error occurred while uploading the book');
+        });
+
+      // PDF Preview functions
+      function openPdfPreview(pdfUrl) {
+        const modal = document.getElementById("pdfPreviewModal");
+        const viewer = document.getElementById("pdfViewer");
+        viewer.src = pdfUrl;
+        modal.style.display = "block";
+      }
+
+      function closePdfPreview() {
+        const modal = document.getElementById("pdfPreviewModal");
+        const viewer = document.getElementById("pdfViewer");
+        viewer.src = "";
+        modal.style.display = "none";
+      }
+
+      // Close modal when clicking outside
+      window.onclick = function (event) {
+        const modal = document.getElementById("pdfPreviewModal");
+        if (event.target === modal) {
+          closePdfPreview();
         }
-      });
+      };
 
       // Load initial user data and books when page loads
       window.addEventListener("load", () => {

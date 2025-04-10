@@ -10,7 +10,13 @@ const fs = require("fs");
 const app = express();
 
 // Create upload directories if they don't exist
-const uploadDirs = ["uploads", "uploads/profiles"];
+const uploadDirs = [
+  "uploads",
+  "uploads/profiles",
+  "uploads/covers",
+  "uploads/books",
+];
+
 uploadDirs.forEach((dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
@@ -22,6 +28,10 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     if (file.fieldname === "photo") {
       cb(null, "uploads/profiles/");
+    } else if (file.fieldname === "coverImage") {
+      cb(null, "uploads/covers/");
+    } else if (file.fieldname === "bookFile") {
+      cb(null, "uploads/books/");
     }
   },
   filename: function (req, file, cb) {
@@ -80,6 +90,12 @@ const bookSchema = new mongoose.Schema({
   },
   coverImage: String,
   bookFile: String,
+  readingProgress: {
+    currentPage: { type: Number, default: 0 },
+    totalPages: { type: Number, default: 0 },
+    lastReadAt: { type: Date },
+    isCompleted: { type: Boolean, default: false },
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -272,6 +288,86 @@ app.get("/api/books/my-books", async (req, res) => {
     console.error("Error fetching books:", error);
     res.status(500).json({
       message: "Error fetching books",
+      error: error.message,
+    });
+  }
+});
+
+// Book upload endpoint
+app.post(
+  "/api/books",
+  auth,
+  upload.fields([
+    { name: "coverImage", maxCount: 1 },
+    { name: "bookFile", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const { title, genre, description } = req.body;
+
+      const book = new Book({
+        title,
+        genre,
+        description,
+        author: req.user._id,
+        coverImage: req.files["coverImage"]
+          ? `/uploads/covers/${req.files["coverImage"][0].filename}`
+          : null,
+        bookFile: req.files["bookFile"]
+          ? `/uploads/books/${req.files["bookFile"][0].filename}`
+          : null,
+      });
+
+      await book.save();
+
+      res.status(201).json({
+        message: "Book uploaded successfully",
+        book: {
+          ...book.toObject(),
+          _id: book._id.toString(),
+          author: {
+            _id: req.user._id.toString(),
+            name: req.user.name,
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Error uploading book:", error);
+      res.status(500).json({
+        message: "Error uploading book",
+        error: error.message,
+      });
+    }
+  }
+);
+
+// Update reading progress endpoint
+app.post("/api/books/:id/progress", auth, async (req, res) => {
+  try {
+    const { currentPage, totalPages } = req.body;
+
+    const book = await Book.findById(req.params.id);
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    book.readingProgress = {
+      currentPage,
+      totalPages,
+      lastReadAt: new Date(),
+      isCompleted: currentPage >= totalPages,
+    };
+
+    await book.save();
+
+    res.json({
+      message: "Reading progress updated",
+      progress: book.readingProgress,
+    });
+  } catch (error) {
+    console.error("Error updating reading progress:", error);
+    res.status(500).json({
+      message: "Error updating reading progress",
       error: error.message,
     });
   }
