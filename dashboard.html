@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BookReader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --primary-dark: #2c4b7a;
+            --secondary-color: #ff6b6b;
+            --text-color: #333;
+            --light-gray: #f8f9fa;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: white;
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .profile-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid var(--primary-color);
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .upload-photo {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            background: var(--light-gray);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 1rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--light-gray);
+            color: var(--primary-color);
+        }
+
+        .nav-links i {
+            font-size: 1.2rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Book Form Styles */
+        .book-form {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Published Books Section */
+        .published-books {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .book-card {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .book-info {
+            padding: 1rem;
+        }
+
+        .book-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                bottom: 0;
+                width: 250px;
+                z-index: 1000;
+                transition: var(--transition);
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        .my-books-section {
+            margin-top: 2rem;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .book-info {
+            padding: 1rem;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-genre {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .book-actions button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-btn {
+            background-color: #4a6fa5;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .book-actions button:hover {
+            opacity: 0.9;
+        }
+
+        .no-books {
+            text-align: center;
+            color: #666;
+            font-size: 1.2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .error-message p {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="profile-section">
+                <img src="https://via.placeholder.com/120" alt="Profile Photo" class="profile-photo" id="profilePhoto">
+                <h2 class="profile-name" id="userName">Loading...</h2>
+                <p class="profile-email" id="userEmail">Loading...</p>
+                <button class="upload-photo" onclick="document.getElementById('photoInput').click()">
+                    <i class="fas fa-camera"></i> Change Photo
+                </button>
+                <input type="file" id="photoInput" style="display: none" accept="image/*">
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#" class="nav-link" data-section="my-books"><i class="fas fa-book"></i> My Books</a></li>
+                <li><a href="#"><i class="fas fa-heart"></i> Favorites</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-content">
+                <div class="dashboard-section">
+                    <div class="header">
+                        <h1>Dashboard</h1>
+                        <button class="btn btn-primary" onclick="toggleBookForm()">
+                            <i class="fas fa-plus"></i> Publish New Book
+                        </button>
+                    </div>
+
+                    <!-- Book Publishing Form -->
+                    <form id="bookForm" class="book-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="bookTitle">Book Title</label>
+                            <input type="text" id="bookTitle" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookGenre">Genre</label>
+                            <input type="text" id="bookGenre" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookDescription">Description</label>
+                            <textarea id="bookDescription" class="form-control" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookCover">Cover Image</label>
+                            <input type="file" id="bookCover" class="form-control" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookFile">Book File (PDF)</label>
+                            <input type="file" id="bookFile" class="form-control" accept=".pdf">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Publish Book</button>
+                    </form>
+
+                    <!-- Published Books Section -->
+                    <section class="published-books">
+                        <h2>My Published Books</h2>
+                        <div class="books-grid" id="booksGrid">
+                            <!-- Books will be loaded here -->
+                        </div>
+                    </section>
+                </div>
+
+                <div class="my-books-section" style="display: none;">
+                    <h2>My Books</h2>
+                    <div class="books-grid" id="myBooksGrid">
+                        <!-- Books will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Check authentication
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'signin.html';
+        }
+
+        // Load user data
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const user = await response.json();
+                
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userEmail').textContent = user.email;
+                if (user.profilePhoto) {
+                    document.getElementById('profilePhoto').src = user.profilePhoto;
+                } else {
+                    document.getElementById('profilePhoto').src = 'images/default-profile.jpg';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // Load published books
+        async function loadPublishedBooks() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'signin.html';
+                    return;
+                }
+
+                const response = await fetch('/api/books/my-books', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                }
+                
+                const books = await response.json();
+                
+                const booksGrid = document.getElementById('booksGrid');
+                
+                if (!books || books.length === 0) {
+                    booksGrid.innerHTML = '<p class="no-books">No books found</p>';
+                    return;
+                }
+
+                booksGrid.innerHTML = books.map(book => `
+                    <div class="book-card">
+                        <img src="${book.coverImage || 'images/default-cover.jpg'}" alt="${book.title}" class="book-cover">
+                        <div class="book-info">
+                            <h3 class="book-title">${book.title}</h3>
+                            <p class="book-genre">${book.genre}</p>
+                            <p class="book-description">${book.description || 'No description available'}</p>
+                            <div class="book-actions">
+                                <button class="edit-btn" onclick="editBook('${book._id}')">Edit</button>
+                                <button class="delete-btn" onclick="deleteBook('${book._id}')">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading books:', error);
+                const booksGrid = document.getElementById('booksGrid');
+                booksGrid.innerHTML = `
+                    <div class="error-message">
+                        <p>Error loading books: ${error.message}</p>
+                        <button onclick="loadPublishedBooks()" class="btn btn-primary">Try Again</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Toggle book form
+        function toggleBookForm() {
+            const form = document.getElementById('bookForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Handle book submission
+        document.getElementById('bookForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('title', document.getElementById('bookTitle').value);
+            formData.append('genre', document.getElementById('bookGenre').value);
+            formData.append('description', document.getElementById('bookDescription').value);
+            formData.append('coverImage', document.getElementById('bookCover').files[0]);
+            formData.append('bookFile', document.getElementById('bookFile').files[0]);
+
+            try {
+                const response = await fetch('/api/books', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert('Book published successfully!');
+                    document.getElementById('bookForm').reset();
+                    toggleBookForm();
+                    loadPublishedBooks();
+                } else {
+                    alert('Error publishing book. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+        // Handle profile photo upload
+        document.getElementById('photoInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('photo', file);
+
+                try {
+                    const response = await fetch('/api/auth/upload-photo', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        document.getElementById('profilePhoto').src = data.photoUrl;
+                    } else {
+                        alert('Error uploading photo. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+        });
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'signin.html';
+        }
+
+        // Load initial data
+        loadUserData();
+        loadPublishedBooks();
+
+        // Update the showSection function
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section, .my-books-section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // Show the selected section
+            const section = document.querySelector(`.${sectionId}-section`);
+            if (section) {
+                section.style.display = 'block';
+            }
+
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            const activeLink = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+
+        // Add event listeners for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = e.target.closest('.nav-link').dataset.section;
+                showSection(section);
+                
+                // If it's the my-books section, load the books
+                if (section === 'my-books') {
+                    loadMyBooks();
+                }
+            });
+        });
+
+        // Update the loadMyBooks function
+        async function loadMyBooks() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'signin.html';
+                    return;
+                }
+
+                const response = await fetch('/api/books/my-books', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to fetch books');
+                }
+
+                const books = await response.json();
+                console.log('Fetched books:', books); // Debug log
+                displayMyBooks(books);
+            } catch (error) {
+                console.error('Error loading books:', error);
+                const booksGrid = document.getElementById('myBooksGrid');
+                booksGrid.innerHTML = `
+                    <div class="error-message">
+                        <p>Error loading books: ${error.message}</p>
+                        <button onclick="loadMyBooks()" class="btn btn-primary">Try Again</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Update the displayMyBooks function
+        function displayMyBooks(books) {
+            const booksGrid = document.getElementById('myBooksGrid');
+            booksGrid.innerHTML = '';
+
+            if (!books || books.length === 0) {
+                booksGrid.innerHTML = '<p class="no-books">You haven\'t published any books yet.</p>';
+                return;
+            }
+
+            books.forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.innerHTML = `
+                    <img src="${book.coverImage || 'images/default-cover.jpg'}" alt="${book.title}" class="book-cover">
+                    <div class="book-info">
+                        <h3 class="book-title">${book.title}</h3>
+                        <p class="book-genre">${book.genre}</p>
+                        <p class="book-description">${book.description || 'No description available'}</p>
+                        <div class="book-actions">
+                            <button class="edit-btn" onclick="editBook('${book._id}')">Edit</button>
+                            <button class="delete-btn" onclick="deleteBook('${book._id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+                booksGrid.appendChild(bookCard);
+            });
+        }
+
+        async function deleteBook(bookId) {
+            if (!confirm('Are you sure you want to delete this book?')) {
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/books/${bookId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to delete book');
+                }
+
+                // Refresh the books list
+                document.getElementById('myBooksBtn').click();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to delete book');
+            }
+        }
+
+        function editBook(bookId) {
+            // Implement edit functionality
+            alert('Edit functionality coming soon!');
+        }
+
+        // Show dashboard section by default
+        showSection('dashboard');
+    </script>
+</body>
+</html> 

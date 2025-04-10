@@ -146,6 +146,16 @@
                 padding: 1.5rem;
             }
         }
+
+        .success-message {
+            color: #28a745;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -264,7 +274,7 @@
             };
 
             try {
-                const response = await fetch('/api/auth/signup', {
+                const response = await fetch('http://localhost:3000/api/auth/signup', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -275,16 +285,29 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Store token and redirect
-                    localStorage.setItem('token', data.token);
-                    window.location.href = 'index.html';
+                    // Show success message
+                    const successMessage = document.createElement('div');
+                    successMessage.className = 'success-message';
+                    successMessage.textContent = 'Account created successfully! Redirecting...';
+                    form.appendChild(successMessage);
+
+                    // Redirect to signin page after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'signin.html';
+                    }, 2000);
                 } else {
                     // Show error message
-                    alert(data.message || 'Signup failed. Please try again.');
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'error-message';
+                    errorMessage.textContent = data.message || 'Signup failed. Please try again.';
+                    form.appendChild(errorMessage);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred. Please try again.');
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                form.appendChild(errorMessage);
             }
         });
 
