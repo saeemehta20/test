@@ -573,16 +573,40 @@
         });
 
       // Logout function
-      function logout() {
-        localStorage.removeItem("token");
-        window.location.href = "signin";
+      async function logout() {
+        try {
+          // Call the server logout endpoint
+          const response = await fetch('/api/auth/logout', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          // Clear client-side storage
+          localStorage.removeItem('token');
+          sessionStorage.removeItem('token');
+          
+          // Redirect to signin page
+          window.location.href = '/signin';
+        } catch (error) {
+          console.error('Error during logout:', error);
+          // Still clear local storage and redirect even if server call fails
+          localStorage.removeItem('token');
+          sessionStorage.removeItem('token');
+          window.location.href = '/signin';
+        }
       }
 
       // Load books function
       async function loadBooks() {
         try {
           console.log("Fetching books...");
-          const response = await fetch("/api/books/my-books");
+          const response = await fetch("/api/books/my-books", {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -594,7 +618,13 @@
           const booksContainer = document.getElementById("booksContainer");
 
           if (books.length === 0) {
-            booksContainer.innerHTML = '<p class="no-books">No books found</p>';
+            booksContainer.innerHTML = `
+              <div class="no-books-message">
+                <i class="fas fa-books" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                <h3>No Books Yet</h3>
+                <p>You haven't published any books yet. Click the "Upload Book" button to get started!</p>
+              </div>
+            `;
             return;
           }
 
@@ -671,6 +701,7 @@
           console.error("Error loading books:", error);
           document.getElementById("booksContainer").innerHTML = `
             <div class="error-message">
+              <i class="fas fa-exclamation-circle" style="font-size: 2rem; color: #dc3545; margin-bottom: 1rem;"></i>
               <p>Error loading books: ${error.message}</p>
               <button onclick="loadBooks()" class="btn btn-primary">Try Again</button>
             </div>

@@ -225,12 +225,25 @@ app.post("/api/auth/signin", async (req, res) => {
 });
 
 // Logout route
-app.get("/api/auth/logout", (req, res) => {
+app.get('/api/auth/logout', (req, res) => {
+  // Clear the session
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).json({ message: "Error logging out" });
+      console.error('Error destroying session:', err);
+      return res.status(500).json({ error: 'Error during logout' });
     }
-    res.redirect('/signin');
+    
+    // Clear the session cookie
+    res.clearCookie('connect.sid');
+    
+    // Set cache control headers to prevent caching
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
+    
+    res.json({ message: 'Logged out successfully' });
   });
 });
 
@@ -273,8 +286,8 @@ app.get("/api/books/my-books", requireAuth, async (req, res) => {
     console.log("Database: bookreader");
     console.log("Collection: books\n");
 
-    // Fetch all books and populate author information
-    const books = await Book.find()
+    // Fetch only books where the author is the logged-in user
+    const books = await Book.find({ author: req.session.userId })
       .populate("author", "name email")
       .sort({ createdAt: -1 })
       .lean();
