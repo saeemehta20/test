@@ -104,7 +104,7 @@ function navigateToPreview(isbn) {
     localStorage.setItem('previewISBN', isbn);
     
     // Navigate to the preview page
-    window.location.href = '/preview';
+    window.location.href = 'preview.html';
 }
 
 // Add loading and error styles

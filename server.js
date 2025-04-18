@@ -1,13 +1,24 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
+const session = require('express-session');
 
 const app = express();
+
+// Session configuration
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: false, // set to true if using HTTPS
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
 
 // Create upload directories if they don't exist
 const uploadDirs = [
@@ -48,8 +59,13 @@ const upload = multer({ storage: storage });
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
-app.use("/uploads", express.static("uploads"));
+
+// Serve static files first (CSS, JS, images)
+app.use('/styles.css', express.static(path.join(__dirname, 'styles.css')));
+app.use('/script.js', express.static(path.join(__dirname, 'script.js')));
+app.use('/fetch.js', express.static(path.join(__dirname, 'fetch.js')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // User Schema
 const userSchema = new mongoose.Schema({
@@ -124,37 +140,12 @@ mongoose
     process.exit(1);
   });
 
-// JWT Secret
-const JWT_SECRET = "123456789"; // In production, use environment variable
-
-// Middleware to verify JWT token
-const auth = async (req, res, next) => {
-  try {
-    const token = req.header("Authorization")?.replace("Bearer ", "");
-
-    if (!token) {
-      throw new Error("No token provided");
-    }
-
-    const decoded = jwt.verify(token, JWT_SECRET);
-
-    if (!decoded || !decoded.userId) {
-      throw new Error("Invalid token format");
-    }
-
-    const user = await User.findOne({ _id: decoded.userId });
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    req.user = user;
-    req.token = token;
-    next();
-  } catch (error) {
-    console.error("Authentication error:", error.message);
-    res.status(401).json({ message: "Please authenticate" });
+// Authentication middleware
+const requireAuth = (req, res, next) => {
+  if (!req.session.userId) {
+    return res.redirect('/signin');
   }
+  next();
 };
 
 // Routes
@@ -181,6 +172,10 @@ app.post("/api/auth/signup", async (req, res) => {
 
     // Save user to database
     await user.save();
+
+    // Set session
+    req.session.userId = user._id;
+    req.session.userName = user.name;
 
     res.status(201).json({
       message: "User registered successfully",
@@ -212,21 +207,37 @@ app.post("/api/auth/signin", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Generate token
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-      expiresIn: "24h",
-    });
+    // Set session
+    req.session.userId = user._id;
+    req.session.userName = user.name;
 
-    res.json({ token });
+    res.json({ 
+      message: "Login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: "Error signing in" });
   }
 });
 
+// Logout route
+app.get("/api/auth/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Error logging out" });
+    }
+    res.redirect('/signin');
+  });
+});
+
 // User profile endpoints
-app.get("/api/auth/me", auth, async (req, res) => {
+app.get("/api/auth/me", requireAuth, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await User.findById(req.session.userId).select("-password");
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: "Error fetching user data" });
@@ -235,7 +246,7 @@ app.get("/api/auth/me", auth, async (req, res) => {
 
 app.post(
   "/api/auth/upload-photo",
-  auth,
+  requireAuth,
   upload.single("photo"),
   async (req, res) => {
     try {
@@ -243,7 +254,7 @@ app.post(
         return res.status(400).json({ message: "No photo uploaded" });
       }
 
-      const user = await User.findById(req.user._id);
+      const user = await User.findById(req.session.userId);
       user.profilePhoto = `/uploads/profiles/${req.file.filename}`;
       await user.save();
 
@@ -256,7 +267,7 @@ app.post(
 );
 
 // Book management endpoints
-app.get("/api/books/my-books", async (req, res) => {
+app.get("/api/books/my-books", requireAuth, async (req, res) => {
   try {
     console.log("\n=== Fetching Books from Database ===");
     console.log("Database: bookreader");
@@ -296,7 +307,7 @@ app.get("/api/books/my-books", async (req, res) => {
 // Book upload endpoint
 app.post(
   "/api/books",
-  auth,
+  requireAuth,
   upload.fields([
     { name: "coverImage", maxCount: 1 },
     { name: "bookFile", maxCount: 1 },
@@ -309,7 +320,7 @@ app.post(
         title,
         genre,
         description,
-        author: req.user._id,
+        author: req.session.userId,
         coverImage: req.files["coverImage"]
           ? `/uploads/covers/${req.files["coverImage"][0].filename}`
           : null,
@@ -326,8 +337,8 @@ app.post(
           ...book.toObject(),
           _id: book._id.toString(),
           author: {
-            _id: req.user._id.toString(),
-            name: req.user.name,
+            _id: req.session.userId.toString(),
+            name: req.session.userName,
           },
         },
       });
@@ -342,7 +353,7 @@ app.post(
 );
 
 // Update reading progress endpoint
-app.post("/api/books/:id/progress", auth, async (req, res) => {
+app.post("/api/books/:id/progress", requireAuth, async (req, res) => {
   try {
     const { currentPage, totalPages } = req.body;
 
@@ -373,31 +384,54 @@ app.post("/api/books/:id/progress", auth, async (req, res) => {
   }
 });
 
-// Serve HTML files
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
-app.get("/signup", (req, res) => {
-  res.sendFile(path.join(__dirname, "signup.html"));
-});
-
+// Public routes (no auth required)
 app.get("/signin", (req, res) => {
+  if (req.session.userId) {
+    return res.redirect('/home');
+  }
   res.sendFile(path.join(__dirname, "signin.html"));
 });
 
-app.get("/search", (req, res) => {
+app.get("/signup", (req, res) => {
+  if (req.session.userId) {
+    return res.redirect('/home');
+  }
+  res.sendFile(path.join(__dirname, "signup.html"));
+});
+
+// Root route - always show signin
+app.get("/", (req, res) => {
+  if (req.session.userId) {
+    return res.redirect('/home');
+  }
+  res.redirect('/signin');
+});
+
+// Protected routes (auth required)
+app.get("/home", requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.get("/search", requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "search.html"));
 });
 
-app.get("/publish", (req, res) => {
+app.get("/publish", requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "publish.html"));
 });
 
-app.get("/about", (req, res) => {
+app.get("/about", requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "about.html"));
 });
 
+app.get("/dashboard", requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, "dashboard.html"));
+});
+
+
+app.get("/preview", requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, "preivew.html"));
+});
 // Handle 404 errors
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, "404.html"));

@@ -164,12 +164,12 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="logo">BookReader</a>
+            <a href="/home" class="logo">BookReader</a>
             <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="search.html">Search Books</a>
-                <a href="publish.html">Publish</a>
-                <a href="about.html">About</a>
+                <a href="/home">Home</a>
+                <a href="/search">Search Books</a>
+                <a href="/publish">Publish</a>
+                <a href="/about">About</a>
             </div>
             <button class="menu-toggle">
                 <i class="fas fa-bars"></i>
@@ -210,7 +210,7 @@
             </form>
 
             <div class="auth-footer">
-                Don't have an account? <a href="signup.html">Sign Up</a>
+                Don't have an account? <a href="signup">Sign Up</a>
             </div>
         </div>
     </section>
@@ -259,7 +259,7 @@
                     }
 
                     // Redirect to dashboard
-                    window.location.href = '/dashboard.html';
+                    window.location.href = '/dashboard';
                 } else {
                     showError(data.message);
                 }
